@@ -40,9 +40,11 @@ dependencies:
   cloud_firestore: ^5.5.1
   firebase_messaging_web: ^3.9.5
   provider: ^6.1.2
-  easy_sidemenu: ^0.6.0
   flutter_web_notification_platform: ^1.0.4
   shared_preferences: ^2.3.3
+  easy_sidemenu: ^0.6.0
+  intl: ^0.20.1
+ 
   
 
 dev_dependencies:

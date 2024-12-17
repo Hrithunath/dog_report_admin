@@ -1,10 +1,13 @@
 import 'package:admin_dog_rport/report_service.dart';
 import 'package:flutter_web_notification_platform/flutter_web_notification_platform.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ReportUserDetails extends StatefulWidget {
+  const ReportUserDetails({super.key});
+
   @override
   _ReportUserDetailsState createState() => _ReportUserDetailsState();
 }
@@ -52,8 +55,8 @@ class _ReportUserDetailsState extends State<ReportUserDetails> {
             .get()
             .then((reportsSnapshot) {
           newCount += reportsSnapshot.docs.length;
-          print('=====newcount======$newCount');
-          print('=====savecount======$savedCount');
+          // print('=====newcount======$newCount');
+          // print('=====savecount======$savedCount');
           // Show notification only if the count increases and it hasn't been shown yet
           if (newCount > savedCount) {
             _showNotification(
@@ -79,7 +82,7 @@ class _ReportUserDetailsState extends State<ReportUserDetails> {
     final adminService = AdminService();
     final userFuture = adminService.fetchAllUsers();
 
-    final validStatuses = ["Not Captured", "Under Review", "Resolved"];
+    final validStatuses = ["Not Captured", "Under Processes", "Captured"];
 
     return Scaffold(
       appBar: AppBar(title: const Text('User Reports')),
@@ -134,7 +137,6 @@ class _ReportUserDetailsState extends State<ReportUserDetails> {
 
                       return ExpansionTile(
                         title: Text(user['name'] ?? 'No Name'),
-                        subtitle: Text(user['email'] ?? 'No Email'),
                         children: reports.map<Widget>((report) {
                           String currentStatus =
                               validStatuses.contains(report['status'])
@@ -154,6 +156,23 @@ class _ReportUserDetailsState extends State<ReportUserDetails> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      if (report['imageUrl'] != null)
+                                        Container(
+                                          height: 200,
+                                          width: 300,
+                                          child: Image.network(
+                                            report['imageUrl'],
+                                            height: 150,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return const Text(
+                                                  'Error loading image');
+                                            },
+                                          ),
+                                        ),
+                                      const SizedBox(height: 10),
                                       Text(
                                         report['description'] ??
                                             'No Description',
@@ -161,10 +180,10 @@ class _ReportUserDetailsState extends State<ReportUserDetails> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        report['incidentDate']
-                                                ?.toDate()
-                                                .toString() ??
-                                            'Unknown Date',
+                                        report['incidentDate'] != null
+                                            ? DateFormat('dd/MM/yyyy').format(
+                                                report['incidentDate'].toDate())
+                                            : 'Unknown Date',
                                       ),
                                       const SizedBox(height: 10),
                                       DropdownButtonFormField<String>(

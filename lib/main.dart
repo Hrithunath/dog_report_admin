@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => AdminService(),
-      child: MaterialApp(debugShowCheckedModeBanner: false, home: SideBar()),
+      child:
+          const MaterialApp(debugShowCheckedModeBanner: false, home: SideBar()),
     );
   }
 }
